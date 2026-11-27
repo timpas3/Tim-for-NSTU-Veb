@@ -256,8 +256,8 @@ function parseVideoLink(raw){
   if(rt) return { type:'iframe', url:'https://' + 'rutube.ru/play/embed/' + rt.at(1) };
 
   // Google Drive
-  const gd = s.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([A-Za-z0-9_-]{10,})/);
-  if(gd) return { type:'iframe', url:'https://' + '://google.com' + gd.at(1) + '/preview' };
+const gd = s.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([A-Za-z0-9_-]{10,})/);
+if(gd) return { type:'iframe', url:'https://' + '://google.com' + gd.at(1) + '/preview' };
 
   if(/^https?:\/\//i.test(s)){
     return /disk\.yandex|yadi\.sk/i.test(s) ? { type:'yadisk', url:s } : { type:'video', url:s };
