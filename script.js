@@ -242,24 +242,29 @@ function parseVideoLink(raw){
   if(srcMatch) s = srcMatch.at(1);
   if(s.startsWith('//')) s = 'https:' + s;
 
+  // YouTube
   const yt = s.match(/(?:youtu\.be\/|v=|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{11})/);
-  if(yt) return { type:'iframe', url:`https://youtube.com{yt.at(1)}?autoplay=1&rel=0`, thumb:`https://youtube.com{yt.at(1)}/hqdefault.jpg` };
+  if(yt) return { type:'iframe', url:'https://' + '://youtube.com' + yt.at(1) + '?autoplay=1&rel=0', thumb:'https://' + '://youtube.com' + yt.at(1) + '/hqdefault.jpg' };
 
+  // VK Видео
   if(/video_ext\.php/i.test(s)) return { type:'iframe', url:s };
   const vk = s.match(/(?:video|clip)(-?\d+)_(\d+)/i);
-  if(vk) return { type:'iframe', url:`https://vk.com{vk.at(1)}&id=${vk.at(2)}&hd=2` };
+  if(vk) return { type:'iframe', url:'https://' + '://vk.com' + vk.at(1) + '&id=' + vk.at(2) + '&hd=2' };
 
+  // RuTube
   const rt = s.match(/rutube\.ru\/(?:video|play\/embed)\/([a-zA-Z0-9]+)/);
-  if(rt) return { type:'iframe', url:`https://rutube.ru{rt.at(1)}` };
+  if(rt) return { type:'iframe', url:'https://' + 'rutube.ru/play/embed/' + rt.at(1) };
 
+  // Google Drive
   const gd = s.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([A-Za-z0-9_-]{10,})/);
-  if(gd) return { type:'iframe', url:`https://google.com{gd.at(1)}/preview` };
+  if(gd) return { type:'iframe', url:'https://' + '://google.com' + gd.at(1) + '/preview' };
 
   if(/^https?:\/\//i.test(s)){
     return /disk\.yandex|yadi\.sk/i.test(s) ? { type:'yadisk', url:s } : { type:'video', url:s };
   }
   return null;
 }
+
 
 async function mountPlayer(container, w, autoplay){
   if(w.videoType === 'local'){
