@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>НГТУ НЭТИ и Тима — Вебинары</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- [2.1] Верхняя панель навигации -->
+<header class="header">
+  <div class="logo" onclick="go('home')">
+    <div class="logo-mark">Н</div>
+    <span>НГТУ НЭТИ и Тима</span>
+  </div>
+  <nav>
+    <a onclick="go('home')" data-nav="home">Главная</a>
+    <a onclick="go('physics')" data-nav="physics">Физика</a>
+    <a onclick="go('math')" data-nav="math">Математика</a>
+  </nav>
+  <button id="settingsBtn" class="icon-btn" title="Настройки ИИ и база уроков">⚙</button>
+</header>
+
+<!-- [2.2] Главный контейнер, куда JS подставляет экраны -->
+<main id="app"></main>
+
+<!-- [2.3] Окно быстрого просмотра видео (только плеер и крестик) -->
+<div id="previewModal" class="modal">
+  <button class="lightbox-close" onclick="closePreview()" title="Закрыть (Esc)">✕</button>
+  <div class="video-lightbox" id="previewBody"></div>
+</div>
+
+<!-- [2.4] Окно настроек ИИ и обмена базой конспектов -->
+<div id="settingsModal" class="modal">
+  <div class="modal-content" style="max-width:560px">
+    <div class="modal-head">
+      <div class="modal-title">Настройки ИИ и база вебинаров</div>
+      <button class="icon-btn" onclick="closeModal('settingsModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label>Groq API Key (распознавание голоса из видео + конспект, работает в РФ без VPN)</label>
+        <input id="groqKeyInput" type="password" placeholder="gsk_...">
+        <div class="hint">Бесплатный ключ: <a href="https://console.groq.com/keys" target="_blank" style="color:var(--primary)">console.groq.com/keys</a>. Извлекает речь прямо из перетащенного видеофайла.</div>
+      </div>
+      <div class="form-row">
+        <label>DeepSeek API Key (опционально, для генерации конспекта по тексту)</label>
+        <input id="deepseekKeyInput" type="password" placeholder="sk-...">
+      </div>
+      <button class="btn primary" onclick="saveKeys()">Сохранить ключи</button>
+
+      <hr style="border:0;border-top:1px solid var(--border);margin:22px 0">
+      <div class="form-row">
+        <label>Обмен базой конспектов с одногруппниками (файл JSON)</label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" onclick="exportBase()">⬇ Скачать базу уроков</button>
+          <button class="btn" onclick="document.getElementById('importFile').click()">⬆ Загрузить базу</button>
+          <input type="file" id="importFile" accept=".json" style="display:none" onchange="importBase(this.files.item(0))">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- [2.5] Окно добавления нового вебинара -->
+<div id="addModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-head">
+      <div class="modal-title">Новый вебинар</div>
+      <button class="icon-btn" onclick="closeModal('addModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row"><label>Название урока</label><input id="f_title" placeholder="Например: Урок 20 — Квантовая физика"></div>
+      <div class="form-row"><label>Предмет</label>
+        <select id="f_subject"><option value="physics">Физика</option><option value="math">Математика</option></select>
+      </div>
+      <div class="form-row"><label>Дата проведения</label><input id="f_date" type="date"></div>
+      <div class="form-row"><label>Длительность (в минутах)</label><input id="f_duration" type="number" value="45"></div>
+      <div class="form-row">
+        <label>Источник видео</label>
+        <select id="f_source" onchange="updateSourceFields()">
+          <option value="local">📁 Файл с компьютера (перетащить)</option>
+          <option value="youtube">YouTube</option>
+          <option value="vk">VK Видео</option>
+          <option value="rutube">Rutube</option>
+          <option value="gdrive">Google Drive</option>
+          <option value="yandex">Яндекс.Диск</option>
+          <option value="direct">Прямая ссылка (mp4/webm)</option>
+        </select>
+      </div>
+      <div id="sourceFields"></div>
+      <div class="form-row"><label>Краткое описание</label><textarea id="f_desc" placeholder="О чём этот вебинар"></textarea></div>
+      <div class="form-row">
+        <label>Транскрипт / заметки (необязательно — для локального файла ИИ сам вытащит речь из звука)</label>
+        <textarea id="f_transcript" placeholder="Оставьте пустым, если прикрепили видеофайл"></textarea>
+      </div>
+      <button class="btn primary" onclick="submitAdd()">Сохранить вебинар</button>
+    </div>
+  </div>
+</div>
+
+<!-- Подключаем скрипт (имя должно совпадать с файлом в списке слева) -->
+  <script type="module">
+  import * as T from 'https://jsdelivr.net';
+  window.TransformersLib = T;
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>
